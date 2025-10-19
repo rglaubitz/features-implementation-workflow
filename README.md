@@ -35,6 +35,42 @@ The comprehensive, battle-tested workflow for implementing major features.
 
 ---
 
+## 📖 Session Continuity & Handoffs
+
+### Handoff Workflow Format
+
+**📘 [HANDOFF-WORKFLOW-FORMAT.md](./HANDOFF-WORKFLOW-FORMAT.md)**
+
+The proven format for managing multi-day/multi-week development with Claude Code, enabling zero context loss across sessions.
+
+**Use for:**
+- Multi-day implementations (2+ days)
+- Multi-week projects (phased development)
+- Complex features requiring architectural decisions
+- Projects needing session-to-session continuity
+
+**Key Features:**
+- ✅ Zero context loss across sessions
+- ✅ Copy-paste "Start Command" for instant continuation
+- ✅ Complete traceability (decisions, fixes, patterns)
+- ✅ Baseline test preservation tracking
+- ✅ Architecture decision documentation
+
+**Success Story:** Graphiti + JSON Integration (Week 3)
+- 3-day handoff created (HANDOFF-WEEK3-DAYS1-3.md)
+- Next session: Instant continuation using "Start Command"
+- 11 tests created, 100% pass rate
+- All architectural decisions preserved
+- Zero time re-discovering context
+
+**Components:**
+1. **Handoff Documents** - Complete session-to-session continuity
+2. **Quick Reference** - Fast pattern/command lookup
+3. **Progress Tracking** - Updated after each day
+4. **Handoff Index** - Chronological progression
+
+---
+
 ## Workflow Components
 
 ### Documentation
@@ -44,6 +80,7 @@ The comprehensive, battle-tested workflow for implementing major features.
 | [FEATURES-IMPLEMENTATION-WORKFLOW.md](./FEATURES-IMPLEMENTATION-WORKFLOW.md) | Complete workflow guide | Read once, reference during implementation |
 | [FEATURES-QUICK-START.md](./FEATURES-QUICK-START.md) | One-page cheat sheet | Quick reference during active work |
 | [PHASE-IMPLEMENTATION-CHECKLIST.md](./PHASE-IMPLEMENTATION-CHECKLIST.md) | Detailed phase checklist | Use for each implementation phase |
+| [HANDOFF-WORKFLOW-FORMAT.md](./HANDOFF-WORKFLOW-FORMAT.md) | Session continuity format | Multi-day/multi-week projects |
 
 ### Templates
 
