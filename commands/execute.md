@@ -16,6 +16,87 @@ You are now executing a feature implementation phase using the battle-tested 10-
 
 ---
 
+## Step 0: Check for Task Manager Structure 📂
+
+**FIRST STEP: Detect if /breakdown was used to create task structure.**
+
+**Check for task-manager/ directory:**
+
+```bash
+# Look for task-manager/ in current project
+if [ -d "task-manager/" ]; then
+    echo "✅ Task Manager structure detected"
+    echo "   Location: task-manager/"
+    echo "   Mode: TASK-MANAGER (structured breakdown)"
+    TASK_MANAGER_MODE=true
+else
+    echo "ℹ️  No task-manager/ directory found"
+    echo "   Mode: LEGACY (using IMPLEMENTATION-GUIDE.md directly)"
+    TASK_MANAGER_MODE=false
+fi
+```
+
+### If TASK_MANAGER_MODE=true
+
+**Read these files to understand phase structure:**
+
+1. **Master README** - `task-manager/README.md`
+   - Overall project progress
+   - All phases listed with completion status
+   - Timeline and statistics
+
+2. **Phase Overview** - `task-manager/phase-{N}-*/README.md`
+   - Current phase summary
+   - All tasks for this phase
+   - Phase-specific dependencies
+
+3. **Task Files** - `task-manager/phase-{N}-*/task-{N}.{M}-*.md`
+   - Detailed task breakdown
+   - Subtasks (2-4 hour chunks)
+   - Dependencies
+   - Success criteria
+   - Research references
+   - Test specifications
+
+**Announce:**
+```
+📂 TASK MANAGER STRUCTURE DETECTED
+
+Reading breakdown structure for Phase {N}:
+- Master README: task-manager/README.md
+- Phase README: task-manager/phase-{N}-{name}/README.md
+- Task files: {X} tasks found for this phase
+
+Each task includes:
+- ✅ Detailed subtasks (2-4 hour chunks)
+- ✅ Explicit dependencies
+- ✅ Success criteria
+- ✅ Research references (ADRs, docs)
+- ✅ Test specifications (TESTING.md line references)
+
+Using task-manager/ structure to guide implementation...
+```
+
+### If TASK_MANAGER_MODE=false (Legacy Mode)
+
+**Use traditional references:**
+- `upgrades/[feature-name]/IMPLEMENTATION-GUIDE.md`
+- Phase-specific README if available
+
+**Announce:**
+```
+ℹ️  LEGACY MODE
+
+No task-manager/ structure found.
+Using traditional implementation guide:
+- upgrades/[feature-name]/IMPLEMENTATION-GUIDE.md
+
+Consider running `/breakdown IMPLEMENTATION.md [project-name]`
+to create structured task breakdown for better progress tracking.
+```
+
+---
+
 ## Step 1: Enter Plan Mode 🛑
 
 **STOP - DO NOT CODE YET!**
@@ -36,9 +117,63 @@ Let's discuss what we need for this phase...
 
 ## Step 2: Discuss Phase Requirements 💬
 
-**Your Action:** Lead a thorough discussion about phase requirements.
+**Your Action:** Lead a thorough discussion about phase requirements using task-manager/ structure if available.
 
-**Ask these questions:**
+### If TASK_MANAGER_MODE=true
+
+**Use task files to structure the discussion:**
+
+1. **List all tasks for this phase:**
+   ```
+   📋 Phase {N} Task Breakdown (from task-manager/phase-{N}-{name}/)
+
+   Task {N}.1: {Task Name}
+   - Subtasks: {X} actionable chunks (2-4 hours each)
+   - Dependencies: {List required tasks from previous phases}
+   - Success Criteria: {Measurable outcomes}
+
+   Task {N}.2: {Task Name}
+   - Subtasks: {Y} actionable chunks
+   - Dependencies: {List}
+   - Success Criteria: {Measurable outcomes}
+
+   ... (list all tasks for phase)
+
+   Total: {X} tasks, {Y} subtasks
+   ```
+
+2. **For each task, review:**
+   - **Dependencies:** "Task {N}.{M} requires {dependency}. Is that complete?"
+   - **Research References:** "Task references ADR-00X, section {Y}. Should I read that now?"
+   - **Test Specifications:** "TESTING.md lines {X}-{Y} define {Z} tests. Shall I create those?"
+   - **Subtasks:** "Task breaks down into {X} subtasks. Looks actionable?"
+
+3. **Ask focused questions based on task structure:**
+   - "All dependencies from previous phases are complete?"
+   - "Research documents referenced in tasks are accessible?"
+   - "Test specifications are clear and sufficient?"
+   - "Subtask breakdown makes sense (2-4 hours each)?"
+
+4. **Validate success criteria:**
+   ```
+   For Task {N}.{M}, success means:
+   - ✅ {Criterion 1} (measurable)
+   - ✅ {Criterion 2} (measurable)
+   - ✅ {Criterion 3} (measurable)
+
+   Does this match your expectations?
+   ```
+
+**Quality Check (Task-Manager Mode):**
+- ✅ All task dependencies validated
+- ✅ Success criteria understood and agreed upon
+- ✅ Research references identified
+- ✅ Test specifications reviewed
+- ✅ Subtask breakdown is actionable
+
+### If TASK_MANAGER_MODE=false (Legacy Mode)
+
+**Use traditional questions:**
 
 1. **Phase Scope:**
    - "What are the main deliverables for this phase?"
@@ -64,7 +199,7 @@ Let's discuss what we need for this phase...
 - `upgrades/[feature-name]/IMPLEMENTATION-GUIDE.md`
 - Phase-specific README if available
 
-**Quality Check:**
+**Quality Check (Legacy Mode):**
 - ✅ All phase objectives clearly defined
 - ✅ Dependencies identified
 - ✅ Technical approach agreed upon
@@ -662,7 +797,108 @@ Next: When ready, run `/execute X+1` to begin next phase.
   ☑ Timeline on track
 ```
 
-**Summary Message:**
+### If TASK_MANAGER_MODE=true: Update Master Progress
+
+**Update `task-manager/README.md` with phase completion:**
+
+Find the "Implementation Progress" section and update it:
+
+```markdown
+## Implementation Progress
+
+### ✅ Completed Phases
+
+- [x] **Phase 1: {Name}** ({X}/{X} tasks complete) - Completed {DATE}
+- [x] **Phase {N}: {Name}** ({Y}/{Y} tasks complete) - Completed {DATE} ← JUST COMPLETED
+
+### 🔄 Current Phase
+
+- [ ] **Phase {N+1}: {Name}** (0/{Z} tasks) - Starting next
+
+### 📋 Upcoming Phases
+
+- [ ] **Phase {N+2}: {Name}** (0/{A} tasks)
+- [ ] **Phase {N+3}: {Name}** (0/{B} tasks)
+
+---
+
+## Statistics
+
+**Overall Progress:**
+- Phases Completed: {N}/{TOTAL} ({XX}%)
+- Tasks Completed: {Y}/{TOTAL_TASKS} ({YY}%)
+- Subtasks Completed: {Z}/{TOTAL_SUBTASKS} ({ZZ}%)
+
+**Phase {N} Completion:**
+- Tasks Completed: {Y}/{Y} (100%)
+- Subtasks Completed: {Z}/{Z} (100%)
+- Tests Created: {TEST_COUNT} tests
+- Files Created: {FILE_COUNT} files
+- Date Completed: {YYYY-MM-DD}
+
+**Timeline Status:**
+- Estimated: {X} weeks total
+- Actual: {Y} weeks elapsed
+- Remaining: {Z} weeks
+- Status: ✅ On Track / ⚠️ Ahead / 🔴 Behind
+```
+
+**Also update phase-specific README:**
+
+In `task-manager/phase-{N}-{name}/README.md`, mark all tasks complete:
+
+```markdown
+## Task Completion Status
+
+- [x] Task {N}.1: {Name} ✅ Complete ({DATE})
+- [x] Task {N}.2: {Name} ✅ Complete ({DATE})
+- [x] Task {N}.3: {Name} ✅ Complete ({DATE})
+
+**Phase {N} Status:** ✅ COMPLETE ({DATE})
+
+All tasks implemented and tested successfully.
+Ready for Phase {N+1}.
+```
+
+**Summary Message (Task-Manager Mode):**
+```
+🎉 PHASE {N} IMPLEMENTATION COMPLETE!
+
+**Delivered:**
+- ✅ {X} tasks completed (all subtasks done)
+- ✅ {Y} implementation files ({Z} lines)
+- ✅ {A} test files ({B} tests, 100% passing)
+- ✅ {C} examples (all executable)
+- ✅ Complete documentation (README, changelog, state)
+
+**Quality Metrics:**
+- Test coverage: {X}% (target: 80%+)
+- Zero TODO/FIXME in production code
+- All examples copy-paste ready
+- Documentation 100% complete
+- All success criteria met ✅
+
+**Timeline:**
+- Planned: Week X-Y
+- Actual: Week X-Y
+- Status: ✅ On Schedule
+
+**Task-Manager Progress Updated:**
+- ✅ task-manager/README.md (master progress)
+- ✅ task-manager/phase-{N}-{name}/README.md (phase complete)
+- Progress: {X}/{TOTAL} phases ({YY}%)
+
+**Next Steps:**
+1. Compact context (when ready)
+2. Review Phase {N} deliverables
+3. Run `/execute {N+1}` for next phase
+
+Ready for Phase {N+1} when you are!
+```
+
+### If TASK_MANAGER_MODE=false: Use Legacy Summary
+
+**Summary Message (Legacy Mode):**
 ```
 🎉 PHASE X IMPLEMENTATION COMPLETE!
 
