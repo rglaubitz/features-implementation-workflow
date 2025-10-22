@@ -71,6 +71,55 @@ The proven format for managing multi-day/multi-week development with Claude Code
 
 ---
 
+## 📚 Research Documentation Management
+
+### Documentation Chunking Workflow
+
+**📘 [base-structure/research/DOCUMENTATION-CHUNKING-WORKFLOW.md](./base-structure/research/DOCUMENTATION-CHUNKING-WORKFLOW.md)**
+
+Transform large research documents (500+ lines) into usable, workflow-integrated documentation systems.
+
+**The Problem:**
+- Large research files (3,000+ lines) → context loss, hallucinations, low utilization (~20%)
+- Developers overwhelmed by massive files → research gets created but never used
+- Claude reads partial content → incomplete patterns, incorrect implementations
+
+**The Solution:**
+- Chunk documentation into focused files (~150 lines each)
+- Create INDEX.md with decision tree navigation
+- Create WORKFLOW-GUIDE.md for structured usage during development
+- Archive originals, maintain cross-references
+
+**Success Metrics:**
+- ✅ 80% research utilization (vs 20% without chunking)
+- ✅ Focused context → No hallucinations
+- ✅ 10-15 min read time (vs 60+ min for full file)
+- ✅ Research actually gets used during implementation
+
+**When to Apply:**
+- ✅ Research document exceeds 500 lines
+- ✅ Document covers multiple distinct topics
+- ✅ Research completed and ready for implementation
+- ✅ Team needs to reference research during development
+
+**Real-World Example:** Apex UI/UX Enhancements
+- **Before:** 4 files, 3,276 lines total (avg 819 lines/file)
+- **After:** 16 focused chunks (~150 lines each) + navigation system
+- **Result:** Phase 2.5 implementation directly references 7 specific chunks
+- **Impact:** Research-backed implementation with explicit file citations
+
+**8-Step Workflow:**
+1. Analyze structure → Identify topic boundaries
+2. Plan chunks → 4-6 chunks per original file
+3. Create chunks → Extract content, add headers
+4. Add cross-references → Link related chunks
+5. Create INDEX.md → Decision tree navigation
+6. Create WORKFLOW-GUIDE.md → Usage during development
+7. Archive originals → Preserve history
+8. Validate & test → Ensure no information lost
+
+---
+
 ## Workflow Components
 
 ### Documentation
@@ -81,6 +130,7 @@ The proven format for managing multi-day/multi-week development with Claude Code
 | [FEATURES-QUICK-START.md](./FEATURES-QUICK-START.md) | One-page cheat sheet | Quick reference during active work |
 | [PHASE-IMPLEMENTATION-CHECKLIST.md](./PHASE-IMPLEMENTATION-CHECKLIST.md) | Detailed phase checklist | Use for each implementation phase |
 | [HANDOFF-WORKFLOW-FORMAT.md](./HANDOFF-WORKFLOW-FORMAT.md) | Session continuity format | Multi-day/multi-week projects |
+| [base-structure/research/DOCUMENTATION-CHUNKING-WORKFLOW.md](./base-structure/research/DOCUMENTATION-CHUNKING-WORKFLOW.md) | Research documentation management | Large research files (500+ lines) |
 
 ### Templates
 

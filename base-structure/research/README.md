@@ -149,6 +149,29 @@ research/
 2. [[Source 2](URL)] - Tier 2 - 2.8k stars
 ```
 
+### Phase 2.5: Documentation Chunking (NEW)
+
+**When research documents exceed 500 lines, apply chunking workflow:**
+
+See **[DOCUMENTATION-CHUNKING-WORKFLOW.md](DOCUMENTATION-CHUNKING-WORKFLOW.md)** for complete guide.
+
+**Quick Overview:**
+1. Analyze structure → Identify 4-6 natural topic boundaries
+2. Create chunks → ~150 lines each, focused and standalone
+3. Add cross-references → Link related chunks
+4. Create INDEX.md → Decision tree navigation
+5. Create WORKFLOW-GUIDE.md → Usage during development
+6. Archive originals → Preserve history
+7. Validate → Ensure no information lost
+
+**Benefits:**
+- 80% research utilization (vs 20% without chunking)
+- Focused context → No hallucinations
+- 10-15 min read time (vs 60+ min for full file)
+- Research actually gets used during implementation
+
+**Success Case:** Apex UI/UX Enhancements (4 files → 16 chunks + navigation system)
+
 ### Phase 3: Architecture Decisions
 
 **Document decisions in ADRs:**
@@ -168,6 +191,9 @@ research/
 ## Research Support
 **Tier 1 Sources:**
 - [Source 1]
+
+**Chunked Documentation:** (if applicable)
+- `chunk-name.md` (lines 45-120)
 
 **Benchmarks:**
 - [Performance data]
