@@ -1,296 +1,232 @@
 # Execute Phase Implementation
 
 **Command:** `/execute [phase-number]`
-**Purpose:** Guide systematic implementation following the proven 10-step pattern
-**Based on:** [Features Implementation Workflow](../../workflow/FEATURES-IMPLEMENTATION-WORKFLOW.md)
+**Purpose:** Systematic implementation using task-manager structure
+**Workflow:** Lean 5-step pattern (Load → Execute → Validate → Track → Next)
 
 ---
 
-## Instructions for Claude
+## Prerequisites
 
-You are now executing a feature implementation phase using the battle-tested 10-step pattern. This pattern has delivered zero-rework implementations with 100% documentation coverage.
+Before running `/execute`:
 
-**Current Phase:** {phase-number or "Next phase in sequence"}
+- ✅ `/breakdown` completed (task-manager/ structure exists)
+- ✅ All previous phase dependencies met
+- ✅ Development environment ready (services running)
 
-**Your Mission:** Guide through all 10 steps systematically, ensuring quality at each checkpoint.
+**If task-manager/ not found:** Error - Run `/breakdown IMPLEMENTATION.md [project-name]` first
 
 ---
 
-## Step 0: Check for Task Manager Structure 📂
+## Workflow Overview
 
-**FIRST STEP: Detect if /breakdown was used to create task structure.**
+The lean 5-step execution pattern:
 
-**Check for task-manager/ directory:**
+```
+Step 1: Load Task Context (30 sec)
+   └─ Auto-read phase tasks, show checklist
+
+Step 2: Execute Subtasks Interactively (varies)
+   └─ Work through subtasks with quality standards
+
+Step 3: Validate Implementation (5-10 min)
+   └─ Run tests, verify success criteria (BLOCKING quality gate)
+
+Step 4: Track Progress (10 sec)
+   └─ Auto-update task-manager/ READMEs
+
+Step 5: Next Action (instant)
+   └─ Show next task, recommend compacts
+```
+
+**Total overhead per phase:** ~10 minutes (vs 30+ minutes in legacy workflow)
+
+---
+
+## Step 1: Load Task Context 📂
+
+**Auto-detect task-manager/ structure and load phase tasks.**
+
+### Detection
+
+Check for `task-manager/` directory in current project:
 
 ```bash
-# Look for task-manager/ in current project
 if [ -d "task-manager/" ]; then
     echo "✅ Task Manager structure detected"
-    echo "   Location: task-manager/"
-    echo "   Mode: TASK-MANAGER (structured breakdown)"
     TASK_MANAGER_MODE=true
 else
-    echo "ℹ️  No task-manager/ directory found"
-    echo "   Mode: LEGACY (using IMPLEMENTATION-GUIDE.md directly)"
-    TASK_MANAGER_MODE=false
+    echo "❌ No task-manager/ found"
+    echo "   Run: /breakdown IMPLEMENTATION.md [project-name]"
+    exit 1
 fi
 ```
 
-### If TASK_MANAGER_MODE=true
+### Load Phase Tasks
 
-**Read these files to understand phase structure:**
+**Read these files automatically:**
 
 1. **Master README** - `task-manager/README.md`
    - Overall project progress
-   - All phases listed with completion status
-   - Timeline and statistics
+   - All phases with completion status
 
 2. **Phase Overview** - `task-manager/phase-{N}-*/README.md`
    - Current phase summary
    - All tasks for this phase
-   - Phase-specific dependencies
+   - Phase dependencies
 
 3. **Task Files** - `task-manager/phase-{N}-*/task-{N}.{M}-*.md`
    - Detailed task breakdown
-   - Subtasks (2-4 hour chunks)
-   - Dependencies
-   - Success criteria
-   - Research references
-   - Test specifications
+   - Subtasks (2-4 hour actionable chunks)
+   - Dependencies (what must be complete first)
+   - Success criteria (measurable outcomes)
+   - Research references (ADRs, docs with line numbers)
+   - Test specifications (exact tests to create)
 
-**Announce:**
+### Display Context
+
+**Announce loaded context:**
+
 ```
-📂 TASK MANAGER STRUCTURE DETECTED
+📂 TASK CONTEXT LOADED
 
-Reading breakdown structure for Phase {N}:
-- Master README: task-manager/README.md
-- Phase README: task-manager/phase-{N}-{name}/README.md
-- Task files: {X} tasks found for this phase
+Phase {N}: {Phase Name}
+Duration: {X} weeks
+Status: {Current status}
 
-Each task includes:
-- ✅ Detailed subtasks (2-4 hour chunks)
-- ✅ Explicit dependencies
-- ✅ Success criteria
-- ✅ Research references (ADRs, docs)
-- ✅ Test specifications (TESTING.md line references)
+Tasks for this phase:
+├─ Task {N}.1: {Name} ({Duration}, {Y} tests)
+│  ├─ Subtask {N}.1.1: {Name} (4 hours)
+│  ├─ Subtask {N}.1.2: {Name} (6 hours)
+│  ├─ Subtask {N}.1.3: {Name} (6 hours)
+│  └─ Subtask {N}.1.4: {Name} (4 hours)
+│
+├─ Task {N}.2: {Name} ({Duration}, {Z} tests)
+│  ├─ Subtask {N}.2.1: {Name} (4 hours)
+│  └─ ...
+│
+└─ ... (all tasks for phase)
 
-Using task-manager/ structure to guide implementation...
+Phase Totals:
+  - Tasks: {X}
+  - Subtasks: {Y}
+  - Tests: {Z}
+  - Estimated Duration: {N} weeks
+
+Research References:
+  - ADR-00{X}: {Title} (referenced in Task {N}.{M})
+  - research/documentation/{topic}.md (lines {X}-{Y})
+
+Dependencies Verified:
+  ✓ {Dependency 1} (Phase {N-1} complete)
+  ✓ {Dependency 2} ({Service} running)
+
+✓ All task files loaded
+✓ Research references extracted
+✓ Test specifications identified
+✓ Ready to implement
 ```
 
-### If TASK_MANAGER_MODE=false (Legacy Mode)
+### Quality Gate
 
-**Use traditional references:**
-- `upgrades/[feature-name]/IMPLEMENTATION-GUIDE.md`
-- Phase-specific README if available
+**Verify before proceeding:**
 
-**Announce:**
-```
-ℹ️  LEGACY MODE
+- ✅ task-manager/ structure exists and is valid
+- ✅ All phase task files are readable
+- ✅ Dependencies from previous phases are met
+- ✅ Success criteria are clearly defined
+- ✅ Research references are accessible
 
-No task-manager/ structure found.
-Using traditional implementation guide:
-- upgrades/[feature-name]/IMPLEMENTATION-GUIDE.md
+**NO REDUNDANT PLANNING** - Just load and display what `/breakdown` already documented.
 
-Consider running `/breakdown IMPLEMENTATION.md [project-name]`
-to create structured task breakdown for better progress tracking.
-```
+**Time:** ~30 seconds (automated file reading)
 
 ---
 
-## Step 1: Enter Plan Mode 🛑
+## Step 2: Execute Subtasks Interactively 💻
 
-**STOP - DO NOT CODE YET!**
+**Work through subtasks systematically with quality standards.**
 
-You are now in plan mode. No tool execution allowed until Step 4.
+### Task Execution Loop
 
-**Announce:**
+**For each task in the phase:**
+
+#### Display Current Task
+
 ```
-🛑 ENTERING PLAN MODE for Phase X implementation
+═══════════════════════════════════════════════════════════
+Task {N}.{M}: {Task Name}
+═══════════════════════════════════════════════════════════
 
-Following the 10-step proven pattern from Features Implementation Workflow.
-No code execution until we complete steps 1-3 and mutual agreement is reached.
+Duration: {X} hours
+Tests: {Y} specifications
+Status: ⬜ Not Started
 
-Let's discuss what we need for this phase...
-```
+Dependencies:
+  {List dependencies or "None - ready to start"}
 
----
+Success Criteria:
+  1. {Criterion 1} (measurable outcome)
+  2. {Criterion 2} (measurable outcome)
+  3. {Criterion 3} (measurable outcome)
+  ...
 
-## Step 2: Discuss Phase Requirements 💬
+Research References:
+  - {ADR or doc} (lines {X}-{Y}) - {Why relevant}
+  - {ADR or doc} (lines {A}-{B}) - {Why relevant}
 
-**Your Action:** Lead a thorough discussion about phase requirements using task-manager/ structure if available.
-
-### If TASK_MANAGER_MODE=true
-
-**Use task files to structure the discussion:**
-
-1. **List all tasks for this phase:**
-   ```
-   📋 Phase {N} Task Breakdown (from task-manager/phase-{N}-{name}/)
-
-   Task {N}.1: {Task Name}
-   - Subtasks: {X} actionable chunks (2-4 hours each)
-   - Dependencies: {List required tasks from previous phases}
-   - Success Criteria: {Measurable outcomes}
-
-   Task {N}.2: {Task Name}
-   - Subtasks: {Y} actionable chunks
-   - Dependencies: {List}
-   - Success Criteria: {Measurable outcomes}
-
-   ... (list all tasks for phase)
-
-   Total: {X} tasks, {Y} subtasks
-   ```
-
-2. **For each task, review:**
-   - **Dependencies:** "Task {N}.{M} requires {dependency}. Is that complete?"
-   - **Research References:** "Task references ADR-00X, section {Y}. Should I read that now?"
-   - **Test Specifications:** "TESTING.md lines {X}-{Y} define {Z} tests. Shall I create those?"
-   - **Subtasks:** "Task breaks down into {X} subtasks. Looks actionable?"
-
-3. **Ask focused questions based on task structure:**
-   - "All dependencies from previous phases are complete?"
-   - "Research documents referenced in tasks are accessible?"
-   - "Test specifications are clear and sufficient?"
-   - "Subtask breakdown makes sense (2-4 hours each)?"
-
-4. **Validate success criteria:**
-   ```
-   For Task {N}.{M}, success means:
-   - ✅ {Criterion 1} (measurable)
-   - ✅ {Criterion 2} (measurable)
-   - ✅ {Criterion 3} (measurable)
-
-   Does this match your expectations?
-   ```
-
-**Quality Check (Task-Manager Mode):**
-- ✅ All task dependencies validated
-- ✅ Success criteria understood and agreed upon
-- ✅ Research references identified
-- ✅ Test specifications reviewed
-- ✅ Subtask breakdown is actionable
-
-### If TASK_MANAGER_MODE=false (Legacy Mode)
-
-**Use traditional questions:**
-
-1. **Phase Scope:**
-   - "What are the main deliverables for this phase?"
-   - "Which components need to be implemented?"
-   - "What are the dependencies on previous phases?"
-
-2. **Research Status:**
-   - "Do we have all necessary documentation?"
-   - "Are there any framework versions to verify?"
-   - "Do we need additional code examples?"
-
-3. **Implementation Details:**
-   - "What are the key technical decisions?"
-   - "Are there any performance considerations?"
-   - "What error handling patterns should we use?"
-
-4. **Testing Strategy:**
-   - "What are the critical test scenarios?"
-   - "What edge cases need coverage?"
-   - "What integration points need testing?"
-
-**Reference:** Check if implementation guide exists for this phase:
-- `upgrades/[feature-name]/IMPLEMENTATION-GUIDE.md`
-- Phase-specific README if available
-
-**Quality Check (Legacy Mode):**
-- ✅ All phase objectives clearly defined
-- ✅ Dependencies identified
-- ✅ Technical approach agreed upon
-- ✅ Testing strategy outlined
-
----
-
-## Step 3: Research Gaps (If Needed) 📚
-
-**If gaps identified in Step 2, address them now.**
-
-**Common Gaps:**
-- Missing framework documentation → Fetch from official sources
-- Unclear version requirements → Verify with GitHub API or package registries
-- No code examples → Search high-quality repos (1.5k+ stars)
-- API changes → Check latest documentation
-
-**Quality Standards:**
-- Tier 1: Official documentation (preferred)
-- Tier 2: High-star GitHub repos (1.5k+ stars)
-- Tier 3+: Not acceptable for implementation decisions
-
-**Actions:**
-- Use Exa AI for web research if needed
-- Use GitHub API for version verification
-- Save research docs to `research/documentation/[topic]/`
-- Update implementation guide with findings
-
-**After Research:**
-- "Research gaps filled. Here's what I found: ..."
-- Update phase requirements based on research
-- Confirm we're ready to proceed
-
----
-
-## Step 4: Exit Plan Mode ▶️
-
-**Checkpoint: Get explicit confirmation before proceeding.**
-
-**Ask:**
-```
-✅ Phase requirements discussed and clear
-✅ Research gaps filled (if any)
-✅ Implementation approach agreed upon
-✅ Testing strategy defined
-
-Ready to begin Phase X implementation?
-
-Type "Yes" or "Let's go" to proceed with coding.
+Subtasks:
+  ⬜ {N}.{M}.1: {Name} (4 hours)
+  ⬜ {N}.{M}.2: {Name} (6 hours)
+  ⬜ {N}.{M}.3: {Name} (6 hours)
+  ⬜ {N}.{M}.4: {Name} (4 hours)
 ```
 
-**Wait for user confirmation.**
+### Subtask Execution
 
-**Once confirmed:**
+**For each subtask in the task:**
+
+#### 1. Display Subtask Details
+
 ```
-▶️ EXITING PLAN MODE
+─────────────────────────────────────────────────────────
+Subtask {N}.{M}.{S}: {Name}
+─────────────────────────────────────────────────────────
 
-Beginning Phase X implementation with:
-- [X] components to build
-- [X] tests to generate
-- [X] examples to create
-- [X] docs to update
+Duration: {X} hours
+Status: ⬜ Not Started
 
-Starting with implementation code...
+Implementation Steps:
+  {Copy steps directly from task file}
+
+Files to Create/Modify:
+  {List from task file}
+
+Code Examples:
+  {Reference to IMPLEMENTATION.md sections via task file}
+
+Validation Commands:
+  {Commands from task file to verify this subtask}
 ```
 
----
+#### 2. Implement the Code
 
-## Step 5: Write Implementation Code 💻
-
-**Now you can write code!**
-
-**Implementation Standards:**
+**Quality Standards (Applied Automatically):**
 
 **Code Quality:**
-- ✅ Real, working code (not pseudocode)
-- ✅ Type hints (Python: `def func(x: int) -> str:`)
-- ✅ Google-style docstrings
+- ✅ Type hints everywhere (`def func(x: int) -> str:`)
+- ✅ Google-style docstrings for all classes/functions
 - ✅ Async/await where appropriate
 - ✅ Structured logging (`logger.info()`, not `print()`)
-- ✅ Proper error handling (try/except with specific exceptions)
-- ✅ Circuit breakers for external calls
+- ✅ Proper error handling (specific exceptions, try/except)
+- ✅ No TODO/FIXME in production code
 
-**File Organization:**
+**Code Pattern:**
 ```python
-# File: src/apex_memory/[component]/[module].py (NEW or MODIFY)
-
 """Module-level docstring explaining purpose.
 
 Author: Apex Infrastructure Team
-Created: YYYY-MM-DD
+Created: {YYYY-MM-DD}
 """
 
 import logging
@@ -302,7 +238,7 @@ logger = logging.getLogger(__name__)
 class ComponentName:
     """Component description.
 
-    This component handles [what it does].
+    This component handles {what it does}.
 
     Args:
         param1: Description.
@@ -310,7 +246,7 @@ class ComponentName:
 
     Examples:
         >>> component = ComponentName()
-        >>> result = component.method()
+        >>> result = await component.method()
     """
 
     def __init__(self, param1: str, param2: Optional[int] = None):
@@ -331,39 +267,98 @@ class ComponentName:
         try:
             # Implementation
             result = await self._internal_method()
+            logger.info(f"Method completed successfully")
             return result
         except Exception as e:
             logger.error(f"Method failed: {e}")
             raise
 ```
 
-**Expected Output:**
-- 3-5 implementation files per phase
-- 200-500 lines per file (modular design)
-- Complete implementations (no TODOs in production code)
+**File Organization:**
+- ✅ Modular design (200-500 lines per file)
+- ✅ Clear imports and dependencies
+- ✅ Logical file structure (group related functionality)
 
-**As you code, announce progress:**
+#### 3. Announce Progress
+
 ```
-📝 Creating [component-name]...
-   File: src/[path]/[file].py (NEW/MODIFY)
-   Lines: ~XXX
-   Purpose: [Brief description]
+📝 Implementing Subtask {N}.{M}.{S}...
+
+Creating/Modifying:
+  - {File 1} ({NEW/MODIFY}) - {Purpose}
+  - {File 2} ({NEW/MODIFY}) - {Purpose}
+
+Lines: ~{Estimated lines}
 ```
+
+#### 4. Validate Subtask
+
+**Run validation commands from task file:**
+
+```bash
+# Example validation commands
+alembic upgrade head                    # Database migration
+python -c "from module import Class"    # Import verification
+curl http://localhost:8000/endpoint     # API endpoint check
+```
+
+**Show results:**
+
+```
+Validation Results:
+  ✓ {Validation 1} passed
+  ✓ {Validation 2} passed
+  ✓ {Validation 3} passed
+```
+
+#### 5. Mark Subtask Complete
+
+```
+✅ Subtask {N}.{M}.{S} Complete
+
+Delivered:
+  ✓ {File 1} created ({X} lines)
+  ✓ {File 2} updated (+{Y} lines)
+  ✓ All validations passed
+
+Time: {Actual time spent}
+```
+
+### Task Progress Tracking
+
+**Show continuous progress:**
+
+```
+Task {N}.{M} Progress:
+  ├─ Subtasks: {S}/{TOTAL} complete ({XX}%)
+  ├─ Estimated remaining: {X} hours
+  └─ Status: {On Track / Ahead / Behind}
+```
+
+**When all subtasks complete, proceed to Step 3 (Validate Implementation).**
+
+**NO REDUNDANT DISCUSSION** - Just execute what's documented in subtask steps.
+
+**Time:** Varies by subtask complexity (actual implementation work)
 
 ---
 
-## Step 6: Generate Tests Proactively ✨
+## Step 3: Validate Implementation ✅
 
-**CRITICAL:** Generate tests WITHOUT being asked!
+**Run tests and verify success criteria - THIS IS A BLOCKING QUALITY GATE.**
 
-**This is automatic behavior:** After implementing code, you IMMEDIATELY start creating tests.
+### Automatic Test Generation
 
-**Test Structure:**
+**Generate tests proactively (WITHOUT being asked):**
+
+After implementing each task, IMMEDIATELY create comprehensive tests.
+
+#### Test Structure
 
 ```python
-# File: tests/unit/test_[component].py (NEW)
+# File: tests/unit/test_{component}.py (NEW)
 
-"""Unit tests for [component].
+"""Unit tests for {component}.
 
 Tests verify:
 - Core functionality
@@ -371,14 +366,16 @@ Tests verify:
 - Error handling
 - Integration points
 
+Test Specifications: TESTING.md lines {X}-{Y}
+
 Author: Apex Infrastructure Team
-Created: YYYY-MM-DD
+Created: {YYYY-MM-DD}
 """
 
 import pytest
 from unittest.mock import Mock, AsyncMock, patch
 
-from apex_memory.[module] import ComponentName
+from apex_memory.{module} import ComponentName
 
 
 @pytest.fixture
@@ -389,7 +386,10 @@ def component():
 
 @pytest.mark.asyncio
 async def test_core_functionality(component):
-    """Test primary use case."""
+    """Test primary use case.
+
+    Validates: {Success criterion from task file}
+    """
     result = await component.method()
 
     assert result is not None
@@ -398,7 +398,10 @@ async def test_core_functionality(component):
 
 @pytest.mark.asyncio
 async def test_edge_case_empty_input(component):
-    """Test handling of empty input."""
+    """Test handling of empty input.
+
+    Validates: Edge case from TESTING.md line {X}
+    """
     result = await component.method_with_input("")
 
     assert result["status"] == "skipped"
@@ -406,14 +409,20 @@ async def test_edge_case_empty_input(component):
 
 @pytest.mark.asyncio
 async def test_error_handling(component):
-    """Test error handling for invalid input."""
+    """Test error handling for invalid input.
+
+    Validates: Error handling requirement
+    """
     with pytest.raises(ValueError):
         await component.method_with_validation("invalid")
 
 
 @pytest.mark.asyncio
 async def test_integration_with_external_service(component):
-    """Test integration with external service."""
+    """Test integration with external service.
+
+    Validates: Integration point from task dependencies
+    """
     with patch("apex_memory.external.service_call") as mock_service:
         mock_service.return_value = {"data": "test"}
 
@@ -423,536 +432,590 @@ async def test_integration_with_external_service(component):
         mock_service.assert_called_once()
 ```
 
-**Test Coverage per Phase:**
-- 15-30 tests minimum
-- Unit tests (component isolation)
-- Integration tests (component interaction)
-- Edge cases (boundary conditions)
-- Error tests (exception handling)
+**Announce test creation:**
 
-**Announce as you create tests:**
 ```
-✨ Generating tests for [component-name]...
-   File: tests/unit/test_[component].py (NEW)
-   Tests: XX scenarios
-   Coverage: Core functionality, edge cases, errors, integration
+✨ Generating tests for Task {N}.{M}...
+
+Test File: tests/unit/test_{component}.py (NEW)
+Test Count: {Y} tests
+Scenarios:
+  - Core functionality ({X} tests)
+  - Edge cases ({Y} tests)
+  - Error handling ({Z} tests)
+  - Integration points ({A} tests)
+
+Coverage Target: 80%+
 ```
 
-**Quality Check:**
-- ✅ All public methods tested
-- ✅ Edge cases covered
-- ✅ Error conditions tested
-- ✅ Integration points tested
-- ✅ Tests are runnable (`pytest tests/...`)
+### Run Test Suite
+
+**Execute tests for this task:**
+
+```bash
+# Run tests
+pytest tests/unit/test_{component}.py -v
+
+# Check coverage
+pytest tests/unit/test_{component}.py \
+  --cov=apex_memory.{module} \
+  --cov-report=term \
+  --cov-report=html
+```
+
+**Display results:**
+
+```
+Running tests for Task {N}.{M}...
+
+Test Results:
+  ✓ test_core_functionality PASSED
+  ✓ test_edge_case_empty_input PASSED
+  ✓ test_error_handling PASSED
+  ✓ test_integration_with_external_service PASSED
+  ... (all tests)
+
+Summary:
+  ✓ {Y}/{Y} tests passing (100%)
+  ✓ Coverage: {X}% (target: 80%+)
+  ✓ No failures or errors
+```
+
+### Verify Success Criteria
+
+**Check each criterion from task file:**
+
+```
+Verifying Task {N}.{M} success criteria:
+
+From task file:
+  1. {Criterion 1}
+     ✓ Verified: {How verified}
+
+  2. {Criterion 2}
+     ✓ Verified: {How verified}
+
+  3. {Criterion 3}
+     ✓ Verified: {How verified}
+
+  ... (all criteria)
+
+All success criteria met: ✅
+```
+
+### Quality Gate (BLOCKING)
+
+**This gate BLOCKS progression if not met.**
+
+#### If Tests Fail or Criteria Not Met:
+
+```
+⚠️  QUALITY GATE FAILED
+
+Cannot proceed to next task until issues resolved.
+
+Issues Found:
+  ❌ test_{name} FAILED
+     Error: {Error message}
+     Fix required: {Suggested fix}
+
+  ❌ Success criterion "{Criterion}" NOT MET
+     Expected: {Expected state}
+     Actual: {Actual state}
+     Fix required: {Suggested fix}
+
+Actions Required:
+  1. Fix failing tests
+  2. Verify all success criteria
+  3. Re-run validation (Step 3)
+
+Do NOT proceed until quality gate passes.
+```
+
+**User must fix issues and validation must pass before continuing.**
+
+#### If All Pass:
+
+```
+✅ QUALITY GATE PASSED
+
+Task {N}.{M}: {Task Name}
+
+Validation Results:
+  ✓ All success criteria met ({X}/{X})
+  ✓ All tests passing ({Y}/{Y})
+  ✓ Code coverage: {Z}% (≥80% target)
+  ✓ No errors or warnings
+
+Implementation Quality:
+  ✓ Type hints complete
+  ✓ Docstrings complete
+  ✓ Error handling implemented
+  ✓ Logging structured
+  ✓ No TODO/FIXME in production code
+
+Ready to mark Task {N}.{M} complete and update progress.
+
+Proceeding to Step 4...
+```
+
+**ENFORCES QUALITY** - Cannot skip failing tests or incomplete success criteria.
+
+**Time:** 5-10 minutes per task (automated testing + verification)
 
 ---
 
-## Step 7: Create Working Examples 📝
+## Step 4: Track Progress 📊
 
-**Create copy-paste ready examples demonstrating the implementation.**
+**Automatically update task-manager/ structure with completion status.**
 
-**Example Types:**
+### Update Task File
 
-**1. Configuration Examples:**
-```python
-# File: upgrades/[feature]/examples/config_phase_X.py
+**File:** `task-manager/phase-{N}-*/task-{N}.{M}-*.md`
 
-"""Phase X configuration example.
-
-This example shows how to configure [component] for [use case].
-
-Author: Apex Infrastructure Team
-Created: YYYY-MM-DD
-"""
-
-from apex_memory.[component] import ComponentName
-
-# Example configuration
-config = {
-    "param1": "production-value",
-    "param2": 100,
-    "feature_flags": {
-        "enable_caching": True,
-        "enable_monitoring": True,
-    },
-}
-
-# Initialize component
-component = ComponentName(**config)
-
-# Usage example
-async def example_usage():
-    """Example showing typical usage pattern."""
-    result = await component.method()
-    print(f"Result: {result}")
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(example_usage())
+**Update header:**
+```markdown
+**Status:** ✅ Complete
+**Completed:** {YYYY-MM-DD}
+**Actual Duration:** {X} hours (estimated: {Y} hours)
 ```
 
-**2. Integration Examples:**
-```python
-# File: upgrades/[feature]/examples/integration_phase_X.py
+**Update progress tracking section:**
+```markdown
+## Progress Tracking
 
-"""Phase X integration example.
+**Subtasks:** 4/4 complete (100%)
 
-Shows how Phase X components integrate with existing system.
+- [x] Subtask {N}.{M}.1: {Name} ✅ ({Completion date})
+- [x] Subtask {N}.{M}.2: {Name} ✅ ({Completion date})
+- [x] Subtask {N}.{M}.3: {Name} ✅ ({Completion date})
+- [x] Subtask {N}.{M}.4: {Name} ✅ ({Completion date})
 
-Author: Apex Infrastructure Team
-Created: YYYY-MM-DD
-"""
-
-# Complete working example with imports, setup, execution
+**Tests:** {Y}/{Y} passing (100%)
+**Success Criteria:** {X}/{X} met (100%)
 ```
 
-**3. Migration/Setup Scripts:**
-```python
-# File: upgrades/[feature]/examples/setup_phase_X.py
+### Update Phase README
 
-"""Setup script for Phase X deployment.
+**File:** `task-manager/phase-{N}-*/README.md`
 
-Run this script to configure Phase X in your environment.
-
-Usage:
-    python examples/setup_phase_X.py --env production
-
-Author: Apex Infrastructure Team
-Created: YYYY-MM-DD
-"""
-
-# Script with argument parsing, validation, execution
+**Update task table:**
+```markdown
+| Task | Name | Status | Duration | Tests | Subtasks |
+|------|------|--------|----------|-------|----------|
+| {N}.1 | {Name} | ✅ | 2 days | 10/10 | 4/4 |
+| {N}.2 | {Name} | ⬜ | 1 day | 0/6 | 0/4 |
+| {N}.3 | {Name} | ⬜ | 1 day | 0/4 | 0/4 |
 ```
 
-**Quality Standards:**
-- ✅ Copy-paste ready (no placeholders)
-- ✅ Real configuration values
-- ✅ Executable code (can run immediately)
-- ✅ Comments explaining key decisions
-- ✅ Progressive complexity (basic → advanced)
+**Update totals:**
+```markdown
+**Totals:**
+- Tasks: 1/4 complete (25%)
+- Subtasks: 4/16 complete (25%)
+- Tests: 10/42 passing (24%)
+```
 
-**Expected Output:**
-- 3-5 examples per phase
-- Each example demonstrates different aspect
-- Examples build on each other (phase1.py → phase2.py → phase3.py)
+### Update Master README
+
+**File:** `task-manager/README.md`
+
+**Update progress table:**
+```markdown
+| Phase | Name | Tasks | Subtasks | Tests | Status | Progress |
+|-------|------|-------|----------|-------|--------|----------|
+| {N} | {Phase Name} | 1/4 | 4/16 | 10/42 | 🔄 | 25% |
+```
+
+**Update overall progress:**
+```markdown
+**Overall Progress:** {X}/23 tasks ({Y}%) | {A}/89 subtasks ({B}%)
+```
+
+### Display Update Summary
+
+```
+📊 PROGRESS UPDATED
+
+Task {N}.{M} Complete:
+  ✓ 4/4 subtasks done
+  ✓ {Y}/{Y} tests passing (100%)
+  ✓ All success criteria met
+  ✓ Completed: {YYYY-MM-DD}
+  ✓ Duration: {X} hours (estimated: {Y} hours)
+
+Files Updated:
+  ✓ task-manager/phase-{N}-*/task-{N}.{M}-*.md
+  ✓ task-manager/phase-{N}-*/README.md
+  ✓ task-manager/README.md
+
+Phase {N} Progress:
+  ├─ Tasks: {X}/{TOTAL} complete ({Y}%)
+  ├─ Subtasks: {A}/{TOTAL} complete ({B}%)
+  └─ Tests: {C}/{TOTAL} passing ({D}%)
+
+Overall Project Progress:
+  ├─ Tasks: {E}/23 complete ({F}%)
+  ├─ Subtasks: {G}/89 complete ({H}%)
+  └─ Tests: {I}/107 passing ({J}%)
+
+Estimated Remaining: {X} hours this phase, {Y} hours total
+```
+
+**FULLY AUTOMATED** - No manual README editing required.
+
+**Time:** ~10 seconds (automated file updates)
 
 ---
 
-## Step 8: Update Documentation 📄
+## Step 5: Next Action 🎯
 
-**Update documentation as you complete implementation.**
+**Provide clear guidance on what to do next.**
 
-**Files to Update:**
+### Determine Next Action
 
-**1. Phase README:**
-```markdown
-# File: upgrades/[feature]/README_PHASE_X.md (CREATE if new)
+**Three possible states:**
 
-## Phase X: [Phase Name] ✅ COMPLETE
+1. **More tasks in current phase** → Continue to next task
+2. **Phase complete** → Recommend context compact
+3. **Project complete** → Celebrate and prepare deployment
 
-**Timeline:** Week X-Y
-**Status:** Complete
-**Date Completed:** YYYY-MM-DD
+### State 1: More Tasks in Phase
 
-### Implemented
+**If tasks remaining in current phase:**
 
-- ✅ [Component 1] - [Brief description]
-- ✅ [Component 2] - [Brief description]
-- ✅ [Component 3] - [Brief description]
+```
+═══════════════════════════════════════════════════════════
+NEXT TASK
+═══════════════════════════════════════════════════════════
 
-### Key Decisions
+Task {N}.{M+1}: {Task Name}
 
-**[Decision 1]:** [Rationale based on research]
-- Source: [Link to research doc or official docs]
-- Why: [Explanation]
+Duration: {X} hours
+Tests: {Y} tests to create
+Dependencies:
+  ✓ Task {N}.{M} (Complete)
+  {Other dependencies if any}
 
-**[Decision 2]:** [Rationale]
-- Source: [Link]
-- Why: [Explanation]
+Subtasks:
+  ⬜ {N}.{M+1}.1: {Name} (4 hours)
+  ⬜ {N}.{M+1}.2: {Name} (6 hours)
+  ⬜ {N}.{M+1}.3: {Name} (3 hours)
+  ⬜ {N}.{M+1}.4: {Name} (2 hours)
 
-### Tests Created
+Phase {N} Progress: {X}/{TOTAL} tasks ({Y}%)
+Estimated Remaining: {Z} hours
 
-- **Unit Tests:** XX tests covering [components]
-- **Integration Tests:** XX tests covering [scenarios]
-- **Edge Cases:** XX tests covering [conditions]
-- **Total:** XX tests
-
-**Coverage:** XX% (target: 80%+)
-
-### Examples Created
-
-1. `examples/config_phase_X.py` - Configuration example
-2. `examples/integration_phase_X.py` - Integration example
-3. `examples/setup_phase_X.py` - Setup script
-
-### Performance Metrics
-
-- [Metric 1]: [Expected improvement]
-- [Metric 2]: [Expected improvement]
-
-### Next Phase
-
-**Phase X+1:** [Next phase name]
-- Dependencies: Phase X complete
-- Expected timeline: Week X-Y
-- Key objectives: [Brief list]
+Ready to continue? Proceeding to Step 2 for next task...
 ```
 
-**2. Implementation State:**
-```markdown
-# File: upgrades/[feature]/IMPLEMENTATION_STATE.md (UPDATE)
+**Auto-proceed to Step 2 (Execute Subtasks) for next task.**
 
-## Current State: Phase X Complete ✅
+### State 2: Phase Complete
 
-### Phase Progress
+**If all tasks in phase are done:**
 
-- [x] Phase 1: [Name] ✅ Complete
-- [x] Phase 2: [Name] ✅ Complete
-- [x] Phase X: [Name] ✅ Complete (Just finished!)
-- [ ] Phase X+1: [Name] 🔄 Next
+```
+🎉 PHASE {N} COMPLETE!
 
-### Statistics
+══════════════════════════════════════════════════════════
+PHASE COMPLETION SUMMARY
+══════════════════════════════════════════════════════════
 
-**Code:**
-- Implementation files: XX (+Y new this phase)
-- Lines of code: XXXX (+YYY this phase)
-- Test files: XX (+Y new this phase)
-- Test coverage: XX%
+Phase {N}: {Phase Name}
+Duration: {X} weeks (estimated: {Y} weeks)
+Status: ✅ COMPLETE
 
-**Documentation:**
-- Research docs: XX
-- Phase READMEs: XX
-- Examples: XX (+Y new this phase)
-- Deployment guides: XX
+Tasks Completed:
+  ✅ Task {N}.1: {Name} ({Duration}, {Tests} tests)
+  ✅ Task {N}.2: {Name} ({Duration}, {Tests} tests)
+  ✅ Task {N}.3: {Name} ({Duration}, {Tests} tests)
+  ✅ Task {N}.4: {Name} ({Duration}, {Tests} tests)
 
-**Quality Metrics:**
-- Tests passing: XXX/XXX (100%)
-- Code coverage: XX% (target: 80%+)
-- Zero TODO/FIXME in production code
-- All examples executable
+Deliverables:
+  ✓ {X} implementation files created/modified
+  ✓ {Y} lines of code written
+  ✓ {Z} tests created (100% passing)
+  ✓ {A} research references used
+  ✓ All success criteria met
+
+Quality Metrics:
+  ✓ Test coverage: {X}% (≥80% target)
+  ✓ Code quality: All standards met
+  ✓ Documentation: 100% complete
+  ✓ No TODO/FIXME in production code
+
+══════════════════════════════════════════════════════════
+
+⚠️  RECOMMENDED: Context Compact
+
+Why compact now:
+  - Phase {N} complete ({X} tasks, {Y} subtasks)
+  - ~{Z} hours of implementation discussion
+  - Next phase: {A} tasks, ~{B} hours of new work
+  - Estimated conversation size: {C}k tokens
+
+What gets preserved:
+  ✓ All code files created
+  ✓ All tests and validation results
+  ✓ Progress in task-manager/ (all READMEs updated)
+  ✓ Phase completion status
+  ✓ Critical architectural decisions
+
+What gets summarized:
+  - Step-by-step implementation details
+  - Code generation discussions
+  - Test creation iterations
+  - Debugging sessions
+
+Resume Command After Compact:
+  /execute {N+1}
+
+Options:
+  1. /compact (RECOMMENDED - cleaner context for next phase)
+  2. /execute {N+1} (continue without compact)
+  3. Take a break (checkpoint saved, can resume anytime)
+
+Current state saved in task-manager/ - safe to compact or pause.
 ```
 
-**3. Changelog:**
-```markdown
-# File: upgrades/[feature]/CHANGELOG.md (UPDATE)
+### State 3: Project Complete
 
-## Phase X: [Phase Name] (YYYY-MM-DD)
+**If all phases are done:**
 
-### Added
-- [Component 1] for [purpose]
-- [Component 2] for [purpose]
-- [Feature] supporting [capability]
+```
+🏆 PROJECT COMPLETE! 🏆
 
-### Changed
-- [Existing component] now supports [new capability]
-- [Configuration] updated to include [new options]
+══════════════════════════════════════════════════════════
+{PROJECT NAME} - IMPLEMENTATION COMPLETE
+══════════════════════════════════════════════════════════
 
-### Tests
-- Added XX unit tests for [components]
-- Added XX integration tests for [scenarios]
-- Total test count: XXX (was YYY)
+All {TOTAL} phases completed successfully!
 
-### Examples
-- `examples/config_phase_X.py` - Configuration example
-- `examples/integration_phase_X.py` - Integration example
-- `examples/setup_phase_X.py` - Setup script
+Phase Summary:
+  ✅ Phase 1: {Name} ({X} tasks, {Y} tests)
+  ✅ Phase 2: {Name} ({A} tasks, {B} tests)
+  ✅ Phase 3: {Name} ({C} tasks, {D} tests)
+  ... (all phases)
 
-### Documentation
-- Created `README_PHASE_X.md`
-- Updated `IMPLEMENTATION_STATE.md`
-- Updated main `README.md` with phase X info
+Final Statistics:
+  ✓ Tasks: {X}/{X} complete (100%)
+  ✓ Subtasks: {Y}/{Y} complete (100%)
+  ✓ Tests: {Z}/{Z} passing (100%)
+  ✓ Files: {A} implementation files
+  ✓ Lines: ~{B} lines of code
+  ✓ Duration: {C} weeks (estimated: {D} weeks)
+
+Quality Achievements:
+  ✓ 100% test pass rate
+  ✓ {X}% code coverage (≥80% target)
+  ✓ Zero TODO/FIXME in production code
+  ✓ Complete documentation
+  ✓ All examples working
+
+Next Steps:
+  1. Review TESTING.md - Run full test suite
+  2. Review DEPLOYMENT-GUIDE.md - Prepare deployment
+  3. Run production readiness checklist
+  4. Deploy to staging environment
+  5. User acceptance testing
+  6. Production deployment
+
+Congratulations! Ready for deployment. 🚀
 ```
 
-**4. Main Feature README:**
-```markdown
-# File: upgrades/[feature]/README.md (UPDATE)
+### Smart Compact Recommendations
 
-# [Feature Name] Implementation
+**Automatically suggest context compact based on:**
 
-**Status:** 🚀 Phase X Complete
-**Progress:** [Progress bar] XX% complete (X/Y phases)
-**Last Updated:** YYYY-MM-DD
+**Triggers:**
+- ✅ Each phase complete (natural break point)
+- ✅ Before starting tasks >16 hours (multi-day work)
+- ✅ When conversation >150k tokens (approaching limit)
 
-## Quick Links
+**Compact Timing Example:**
+```
+💡 Smart Compact Recommendation
 
-- [IMPROVEMENT-PLAN.md](./IMPROVEMENT-PLAN.md) - Feature specification
-- [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md) - Implementation steps
-- [README_PHASE_X.md](./README_PHASE_X.md) - Latest phase (just completed!)
-- [DEPLOYMENT-GUIDE.md](./DEPLOYMENT-GUIDE.md) - Deployment procedures (when ready)
+Compact suggested because:
+  - Phase {N} complete (natural checkpoint)
+  - {X} hours of detailed implementation work
+  - Conversation size: ~{Y}k tokens
+  - Next phase: New features, different focus area
 
-## Implementation Progress
+Benefits of compacting now:
+  ✓ Cleaner context for Phase {N+1}
+  ✓ Faster Claude responses
+  ✓ Better focus on new work
+  ✓ All progress preserved in task-manager/
 
-### ✅ Completed Phases
+Checkpoint saved: phase-{N}-complete
+Resume command: /execute {N+1}
 
-- [x] **Phase 1: [Name]** (Week 1-2) - [Brief description]
-- [x] **Phase 2: [Name]** (Week 3-4) - [Brief description]
-- [x] **Phase X: [Name]** (Week X-Y) - [Brief description] ← JUST COMPLETED
-
-### 🔄 Current Phase
-
-- [ ] **Phase X+1: [Name]** (Week X-Y) - [Brief description]
-
-### 📋 Upcoming Phases
-
-- [ ] **Phase X+2: [Name]** (Week X-Y) - [Brief description]
+Safe to compact - all state preserved in files.
 ```
 
----
+### Create Checkpoint
 
-## Step 9: Context Compact 🗜️
+**Before any potential compact or break:**
 
-**CRITICAL REMINDER:** Compact context before next phase!
-
-**Why Context Compact Matters:**
-- Prevents context window overflow
-- Maintains conversation continuity
-- Keeps focus on current work
-- Essential for multi-phase projects
-
-**Announce:**
 ```
-🗜️ CONTEXT COMPACT REMINDER
+Checkpoint Saved: phase-{N}-complete
 
-Phase X implementation is complete. Before starting Phase X+1, we should compact the context.
+Current State:
+  - Phase {N}: ✅ Complete ({X}/{X} tasks)
+  - Overall: {Y}/23 tasks ({Z}%)
+  - Next: Phase {N+1} ({A} tasks, ~{B} hours)
 
-**What gets preserved:**
-- Implementation state (Phase X complete)
-- Critical decisions made
-- Links to created files
-- Next phase plan
-- Key metrics and progress
+Resume Command:
+  /execute {N+1}
 
-**What gets summarized:**
-- Detailed implementation discussions
-- Step-by-step code creation
-- Test generation details
-- Documentation updates
+All progress saved in:
+  ✓ task-manager/README.md (master progress)
+  ✓ task-manager/phase-{N}-*/README.md (phase complete)
+  ✓ task-manager/phase-{N}-*/task-*.md (all tasks)
 
-Ready to compact before Phase X+1?
+Safe to:
+  - Take a break
+  - Compact context
+  - Switch projects
+
+Can resume anytime with /execute {N+1}
 ```
 
-**Wait for user confirmation:**
-- User says: "Let's compact" / "Yes, compact" / "Proceed"
-- Then perform context compact operation
+**ALWAYS ORIENTED** - Developer always knows what's next, when to compact, how to resume.
 
-**After Compact:**
-```
-✅ Context compacted successfully
-
-Preserved:
-- Phase X complete (XX files, XX tests, XX examples)
-- All documentation updated
-- Ready for Phase X+1
-
-Next: When ready, run `/execute X+1` to begin next phase.
-```
-
----
-
-## Step 10: Mark Phase Complete ✅
-
-**Final step: Confirm phase completion and readiness for next phase.**
-
-**Phase Completion Checklist:**
-```
-☑ Implementation Complete
-  ☑ All planned components implemented (X/X)
-  ☑ All code follows quality standards
-  ☑ No TODO/FIXME in production code
-  ☑ Proper error handling throughout
-  ☑ Structured logging (no print statements)
-
-☑ Tests Complete
-  ☑ Unit tests written (XX tests)
-  ☑ Integration tests written (XX tests)
-  ☑ Edge cases covered
-  ☑ Error scenarios tested
-  ☑ All tests passing (XXX/XXX = 100%)
-  ☑ Coverage ≥80% target
-
-☑ Examples Complete
-  ☑ Configuration examples (X files)
-  ☑ Integration examples (X files)
-  ☑ Setup scripts (X files)
-  ☑ All examples executable
-  ☑ No placeholders or TODOs
-
-☑ Documentation Complete
-  ☑ Phase README created/updated
-  ☑ Implementation state updated
-  ☑ Changelog updated
-  ☑ Main README updated
-  ☑ All cross-references correct
-
-☑ Quality Gates Passed
-  ☑ Code review self-check complete
-  ☑ Performance considerations addressed
-  ☑ Security considerations addressed
-  ☑ No breaking changes (or documented)
-
-☑ Ready for Next Phase
-  ☑ Context compacted (or ready to compact)
-  ☑ Dependencies for next phase identified
-  ☑ Team aligned on next steps
-  ☑ Timeline on track
-```
-
-### If TASK_MANAGER_MODE=true: Update Master Progress
-
-**Update `task-manager/README.md` with phase completion:**
-
-Find the "Implementation Progress" section and update it:
-
-```markdown
-## Implementation Progress
-
-### ✅ Completed Phases
-
-- [x] **Phase 1: {Name}** ({X}/{X} tasks complete) - Completed {DATE}
-- [x] **Phase {N}: {Name}** ({Y}/{Y} tasks complete) - Completed {DATE} ← JUST COMPLETED
-
-### 🔄 Current Phase
-
-- [ ] **Phase {N+1}: {Name}** (0/{Z} tasks) - Starting next
-
-### 📋 Upcoming Phases
-
-- [ ] **Phase {N+2}: {Name}** (0/{A} tasks)
-- [ ] **Phase {N+3}: {Name}** (0/{B} tasks)
-
----
-
-## Statistics
-
-**Overall Progress:**
-- Phases Completed: {N}/{TOTAL} ({XX}%)
-- Tasks Completed: {Y}/{TOTAL_TASKS} ({YY}%)
-- Subtasks Completed: {Z}/{TOTAL_SUBTASKS} ({ZZ}%)
-
-**Phase {N} Completion:**
-- Tasks Completed: {Y}/{Y} (100%)
-- Subtasks Completed: {Z}/{Z} (100%)
-- Tests Created: {TEST_COUNT} tests
-- Files Created: {FILE_COUNT} files
-- Date Completed: {YYYY-MM-DD}
-
-**Timeline Status:**
-- Estimated: {X} weeks total
-- Actual: {Y} weeks elapsed
-- Remaining: {Z} weeks
-- Status: ✅ On Track / ⚠️ Ahead / 🔴 Behind
-```
-
-**Also update phase-specific README:**
-
-In `task-manager/phase-{N}-{name}/README.md`, mark all tasks complete:
-
-```markdown
-## Task Completion Status
-
-- [x] Task {N}.1: {Name} ✅ Complete ({DATE})
-- [x] Task {N}.2: {Name} ✅ Complete ({DATE})
-- [x] Task {N}.3: {Name} ✅ Complete ({DATE})
-
-**Phase {N} Status:** ✅ COMPLETE ({DATE})
-
-All tasks implemented and tested successfully.
-Ready for Phase {N+1}.
-```
-
-**Summary Message (Task-Manager Mode):**
-```
-🎉 PHASE {N} IMPLEMENTATION COMPLETE!
-
-**Delivered:**
-- ✅ {X} tasks completed (all subtasks done)
-- ✅ {Y} implementation files ({Z} lines)
-- ✅ {A} test files ({B} tests, 100% passing)
-- ✅ {C} examples (all executable)
-- ✅ Complete documentation (README, changelog, state)
-
-**Quality Metrics:**
-- Test coverage: {X}% (target: 80%+)
-- Zero TODO/FIXME in production code
-- All examples copy-paste ready
-- Documentation 100% complete
-- All success criteria met ✅
-
-**Timeline:**
-- Planned: Week X-Y
-- Actual: Week X-Y
-- Status: ✅ On Schedule
-
-**Task-Manager Progress Updated:**
-- ✅ task-manager/README.md (master progress)
-- ✅ task-manager/phase-{N}-{name}/README.md (phase complete)
-- Progress: {X}/{TOTAL} phases ({YY}%)
-
-**Next Steps:**
-1. Compact context (when ready)
-2. Review Phase {N} deliverables
-3. Run `/execute {N+1}` for next phase
-
-Ready for Phase {N+1} when you are!
-```
-
-### If TASK_MANAGER_MODE=false: Use Legacy Summary
-
-**Summary Message (Legacy Mode):**
-```
-🎉 PHASE X IMPLEMENTATION COMPLETE!
-
-**Delivered:**
-- ✅ XX implementation files (XXXX lines)
-- ✅ XX test files (XXX tests, 100% passing)
-- ✅ XX examples (all executable)
-- ✅ Complete documentation (README, changelog, state)
-
-**Quality Metrics:**
-- Test coverage: XX% (target: 80%+)
-- Zero TODO/FIXME in production code
-- All examples copy-paste ready
-- Documentation 100% complete
-
-**Timeline:**
-- Planned: Week X-Y
-- Actual: Week X-Y
-- Status: ✅ On Schedule
-
-**Next Steps:**
-1. Compact context (when ready)
-2. Review Phase X deliverables
-3. Run `/execute X+1` for next phase
-
-Ready for Phase X+1 when you are!
-```
+**Time:** Instant (guidance display only)
 
 ---
 
 ## Quick Reference
 
-**Command Usage:**
+### Command Usage
+
 ```bash
-/execute          # Execute next phase (auto-detect)
-/execute 2        # Execute specific phase number
+# Auto-detect next phase
+/execute
+
+# Execute specific phase
+/execute 1        # Phase 1
+/execute 2        # Phase 2
+/execute 3        # Phase 3
 ```
 
-**Quality Standards:**
-- 3-5 implementation files per phase
-- 15-30 tests per phase (unit + integration + edge cases)
-- 3-5 examples per phase (copy-paste ready)
-- 100% documentation coverage
-- Context compact between phases
+### Prerequisites Checklist
 
-**Success Metrics:**
-- ✅ All code implemented and tested
-- ✅ Zero rework required
-- ✅ Documentation complete as you go
-- ✅ Examples working immediately
-- ✅ Ready for next phase
+Before running `/execute [phase]`:
+
+```
+☑ /breakdown completed (task-manager/ exists)
+☑ Previous phases complete (check dependencies)
+☑ Development environment ready
+  ☑ Services running (databases, APIs, etc.)
+  ☑ Dependencies installed
+  ☑ Environment variables configured
+☑ Tests from previous phases still passing
+```
+
+### The 5-Step Workflow
+
+```
+1. LOAD (30 sec)
+   └─ Read task files → Show checklist
+
+2. EXECUTE (varies)
+   └─ Implement subtasks → Quality code
+
+3. VALIDATE (5-10 min)
+   └─ Generate tests → Verify criteria → BLOCKING GATE
+
+4. TRACK (10 sec)
+   └─ Update READMEs → Show progress
+
+5. NEXT (instant)
+   └─ Show next task → Recommend compact → Save checkpoint
+```
+
+### Quality Standards
+
+**Code Quality (Automatically Applied):**
+- ✅ Type hints everywhere
+- ✅ Google-style docstrings
+- ✅ Async/await where appropriate
+- ✅ Structured logging (no print statements)
+- ✅ Proper error handling (specific exceptions)
+- ✅ No TODO/FIXME in production code
+
+**Testing Standards:**
+- ✅ Tests generated proactively (without asking)
+- ✅ Unit tests (component isolation)
+- ✅ Integration tests (component interaction)
+- ✅ Edge cases (boundary conditions)
+- ✅ Error tests (exception handling)
+- ✅ Coverage ≥80% target
+- ✅ 100% test pass rate (blocking gate)
+
+**Progress Tracking:**
+- ✅ Fully automated README updates
+- ✅ Real-time progress metrics
+- ✅ Estimated time remaining
+- ✅ Checkpoint saves for safe resumption
+
+### Time Estimates
+
+**Per Phase:**
+- Setup: ~30 seconds (Step 1)
+- Implementation: Varies (Step 2 - actual coding)
+- Validation: ~5-10 minutes per task (Step 3)
+- Progress tracking: ~10 seconds (Step 4)
+- Next action: Instant (Step 5)
+
+**Total Overhead:** ~10 minutes per phase (vs 30+ minutes in legacy workflow)
+
+### Success Metrics
+
+**What This Workflow Delivers:**
+- ✅ Zero redundant planning (trusts /breakdown)
+- ✅ Quality enforced (cannot skip failing tests)
+- ✅ Progress automated (no manual README updates)
+- ✅ Always oriented (clear next steps)
+- ✅ Context efficient (strategic compact reminders)
+- ✅ Fast execution (30 sec setup vs 15-30 min)
 
 ---
 
-**Reference:** [Features Implementation Workflow](../../workflow/FEATURES-IMPLEMENTATION-WORKFLOW.md)
+## Validation Checkpoints
 
-**This command implements the proven pattern that delivered the Query Router upgrade with zero rework and 100% documentation coverage.**
+**Step 1 (Load):**
+- [ ] task-manager/ structure detected
+- [ ] All task files loaded successfully
+- [ ] Dependencies verified
+- [ ] Context displayed clearly
+
+**Step 2 (Execute):**
+- [ ] Subtasks executed in order
+- [ ] Quality standards applied
+- [ ] Code follows patterns
+- [ ] Validation commands pass
+
+**Step 3 (Validate):**
+- [ ] Tests generated proactively
+- [ ] All tests passing (100%)
+- [ ] Success criteria met
+- [ ] Quality gate enforced
+
+**Step 4 (Track):**
+- [ ] Task file updated (status, completion date)
+- [ ] Phase README updated (task table, totals)
+- [ ] Master README updated (progress, overall stats)
+- [ ] Progress displayed accurately
+
+**Step 5 (Next):**
+- [ ] Next action clear
+- [ ] Compact recommended at right time
+- [ ] Checkpoint saved
+- [ ] Resume command provided
+
+---
+
+**This workflow implements the lean execution pattern that complements /breakdown with zero redundancy and maximum efficiency.**
